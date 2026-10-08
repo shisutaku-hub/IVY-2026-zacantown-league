@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ザキャンタウンリーグ公式案内</title>
+    <style>
+        /* =========================================
+           📱 1. 基本設定＆ロトムスマホ風デザイン
+           ========================================= */
+        :root {
+            --rotom-orange: #ff5e00;
+            --rotom-dark: #d94f00;
+            --rotom-cyan: #00f0ff;
+            --rotom-cyan-dark: #00b4d8;
+            --bg-color: #f0f8ff;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--rotom-cyan) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            padding-bottom: 60px; 
+        }
+
+        /* 📱 戻るナビゲーションバー */
+        .back-bar {
+            background: #1e293b; color: white;
+            padding: 12px 16px; font-size: 13px; font-weight: bold;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .back-btn {
+            color: var(--rotom-cyan); text-decoration: none; display: inline-flex;
+            align-items: center; gap: 4px; font-weight: 900; cursor: pointer;
+        }
+
+        /* 📱 ヘッダー */
+        header {
+            background: linear-gradient(135deg, var(--rotom-orange), #ff2a00); color: white;
+            padding: 24px 16px; text-align: center;
+            border-bottom: 6px solid var(--rotom-dark);
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 15px rgba(255, 94, 0, 0.3);
+        }
+        header h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px; }
+        header p { margin: 5px 0 0; font-size: 13px; font-weight: bold; color: #ffe0cc; }
+
+        .container { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
+        
+        .section-title {
+            font-size: 16px; font-weight: 900; color: var(--rotom-orange);
+            margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;
+        }
+        .section-title::before {
+            content: ''; display: inline-block; width: 6px; height: 18px;
+            background: var(--rotom-cyan); border-radius: 4px;
+        }
+
+        /* 📍 アトラクション・部門カード */
+        .menu-grid { display: flex; flex-direction: column; gap: 14px; }
+        .menu-card {
+            background: var(--card-bg); border-radius: 20px; padding: 18px 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            border: 2px solid var(--rotom-cyan-dark); box-shadow: 0 4px 0 var(--rotom-cyan-dark);
+            cursor: pointer; transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .menu-card:active {
+            transform: translateY(4px); box-shadow: 0 0 0 var(--rotom-cyan-dark);
+        }
+
+        .card-tag {
+            display: inline-block; font-size: 11px; font-weight: 900; padding: 3px 8px;
+            border-radius: 8px; margin-bottom: 6px; color: white;
+        }
+        .tag-single-beginner { background: #10b981; }
+        .tag-single-master { background: var(--rotom-orange); }
+        .tag-double { background: #3b82f6; }
+        .tag-info { background: #64748b; }
+
+        .menu-title { font-weight: 900; font-size: 16px; margin: 0; color: var(--text-main); }
+        .menu-desc { font-size: 12px; color: var(--text-sub); margin-top: 4px; font-weight: bold; }
+        .arrow { color: var(--rotom-cyan-dark); font-weight: 900; font-size: 20px; padding-left: 10px; }
+
+        /* 📱 モーダル */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8); z-index: 1000;
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-content {
+            background: var(--card-bg); border-radius: 24px; padding: 24px 20px;
+            width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto;
+            border: 4px solid var(--rotom-cyan); box-shadow: 0 0 20px var(--rotom-cyan);
+            text-align: left;
+        }
+        .modal-title { 
+            font-size: 18px; font-weight: 900; color: var(--rotom-orange); 
+            margin-top: 0; border-bottom: 2px solid var(--rotom-cyan); padding-bottom: 8px; 
+            display: flex; align-items: center; gap: 8px;
+        }
+        .close-btn {
+            width: 100%; padding: 14px; border-radius: 16px; border: none;
+            background: #1e293b; color: white; font-weight: 900; font-size: 16px;
+            border-bottom: 4px solid #0f172a; cursor: pointer; margin-top: 20px;
+        }
+        .close-btn:active { transform: translateY(4px); border-bottom-width: 0; }
+        
+        .info-box {
+            background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 12px;
+            border: 1px solid #e2e8f0; font-size: 13px; line-height: 1.6;
+        }
+        .info-box strong { color: var(--rotom-dark); }
+
+        .rule-list { padding-left: 20px; font-size: 13px; line-height: 1.6; margin: 0; }
+        .rule-list li { margin-bottom: 8px; }
+
+        /* 🔄 リーグの流れ用ステップUI */
+        .step-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .step-item {
+            background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 10px 14px;
+            font-size: 13px; line-height: 1.5; font-weight: bold;
+        }
+        .step-num {
+            display: inline-block; background: var(--rotom-orange); color: white;
+            font-weight: 900; font-size: 11px; padding: 2px 6px; border-radius: 6px;
+            margin-right: 6px;
+        }
+        .branch-box {
+            background: #fff7ed; border: 1.5px dashed var(--rotom-orange); border-radius: 8px;
+            padding: 8px 10px; margin-top: 6px; font-size: 12px; color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 📱 公式ナビへの戻るバー -->
+    <div class="back-bar">
+        <a class="back-btn" href="./index.html">◀ 公式ナビへ戻る</a>
+        <span>ZACAN LEAGUE</span>
+    </div>
+
+    <!-- 📱 ヘッダー -->
+    <header>
+        <h1>⚔️ ザキャンタウンリーグ</h1>
+        <p>Pokémon Champions ザキャンタウンリーグ挑戦者案内</p>
+    </header>
+
+    <div class="container">
+
+        <!-- 🔴 シングルバトル部門 -->
+        <div class="section-title">🔴 シングルバトル部門</div>
+        <div class="menu-grid">
+            
+            <!-- ビギナーズリーグ -->
+            <div class="menu-card" onclick="openModal('modal-single-beginner')">
+                <div>
+                    <span class="card-tag tag-single-beginner">BEGINNER'S LEAGUE</span>
+                    <div class="menu-title">🔰 ビギナーズリーグ</div>
+                    <div class="menu-desc">初心者 ～ 中級者向け</div>
+                </div>
+                <span class="arrow">▶</span>
+            </div>
+
+            <!-- マスターズリーグ -->
+            <div class="menu-card" onclick="openModal('modal-single-master')">
+                <div>
+                    <span class="card-tag tag-single-master">MASTER'S LEAGUE</span>
+                    <div class="menu-title">🏆 マスターズリーグ</div>
+                    <div class="menu-desc">上級者向け</div>
+                </div>
+                <span class="arrow">▶</span>
+            </div>
+
+        </div>
+
+        <!-- 🔵 ダブルバトル部門 -->
+        <div class="section-title">🔵 ダブルバトル部門</div>
+        <div class="menu-grid">
+            
+            <!-- ダブルバトル -->
+            <div class="menu-card" onclick="openModal('modal-double')">
+                <div>
+                    <span class="card-tag tag-double">DOUBLE BATTLE</span>
+                    <div class="menu-title">⚔️ ダブルバトル部門</div>
+                    <div class="menu-desc">全プレイヤー対象</div>
+                </div>
+                <span class="arrow">▶</span>
+            </div>
+
+        </div>
+
+        <!-- ⚙️ 共通案内・景品 -->
+        <div class="section-title">🔍 共通案内・景品</div>
+        <div class="menu-grid">
+
+            <!-- 📋 リーグの流れ -->
+            <div class="menu-card" onclick="openModal('modal-flow')">
+                <div>
+                    <span class="card-tag tag-info" style="background:#0284c7;">LEAGUE FLOW</span>
+                    <div class="menu-title">📋 リーグの流れ</div>
+                    <div class="menu-desc">受付から対戦・景品受取までの手順</div>
+                </div>
+                <span class="arrow">▶</span>
+            </div>
+            
+            <!-- 対戦ルール・マナー -->
+            <div class="menu-card" onclick="openModal('modal-rules')">
+                <div>
+                    <span class="card-tag tag-info">RULES & MANNERS</span>
+                    <div class="menu-title">📜 対戦ルール</div>
+                    <div class="menu-desc">対戦中の注意事項</div>
+                </div>
+                <span class="arrow">▶</span>
+            </div>
+
+            <!-- 景品・参加賞 -->
+            <div class="menu-card" onclick="openModal('modal-prizes')">
+                <div>
+                    <span class="card-tag tag-info" style="background:#e11d48;">PRIZES</span>
+                    <div class="menu-title">🎁 景品・参加賞の紹介</div>
+                    <div class="menu-desc">上位入賞景品や参加賞の一覧</div>
+                </div>
+                <span class="arrow">▶</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 🔰 モーダル：シングル（ビギナーズ） -->
+    <div id="modal-single-beginner" class="modal" onclick="closeModal('modal-single-beginner')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">🔰 シングル：ビギナーズ</h2>
+            <div class="info-box">
+                <strong>【対象】</strong> 初心者 ～ 中級者<br>
+                <strong>【使用ソフト】</strong> Pokémon Champions<br>
+                <strong>【対戦ルール】</strong> シングルバトル（1対1）
+            </div>
+            <p style="font-size:13px; line-height:1.6; color:var(--text-sub);">
+                対戦を始めたばかりの方や、カジュアルにバトルを楽しみたい方向けのリーグだ！お気軽にご参加ください。<br>挑戦者を迎え撃つタイプリーダーたちは、それぞれ専門のタイプがあるぞ！<br>数に限りがありますが、パーティレンタルもあります！
+            </p>
+            <button class="close-btn" onclick="closeModal('modal-single-beginner')">閉じる</button>
+        </div>
+    </div>
+
+    <!-- 🏆 モーダル：シングル（マスターズ） -->
+    <div id="modal-single-master" class="modal" onclick="closeModal('modal-single-master')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">🏆 シングル：マスターズ</h2>
+            <div class="info-box">
+                <strong>【対象】</strong> 上級者<br>
+                <strong>【使用ソフト】</strong> Pokémon Champions<br>
+                <strong>【対戦ルール】</strong> シングルバトル（1対1）
+            </div>
+            <p style="font-size:13px; line-height:1.6; color:var(--text-sub);">
+                腕に覚えのあるトレーナー向けのリーグ。鍛え上げたパーティでトップを目指せ！<br>リーグスタッフもガチ構築で挑戦者を迎え撃つぞ！<br>マスターズリーグはパーティのレンタルはありません。
+            </p>
+            <button class="close-btn" onclick="closeModal('modal-single-master')">閉じる</button>
+        </div>
+    </div>
+
+    <!-- ⚔️ モーダル：ダブルバトル -->
+    <div id="modal-double" class="modal" onclick="closeModal('modal-double')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">⚔️ ダブルバトル部門</h2>
+            <div class="info-box">
+                <strong>【対象】</strong> 全プレイヤー対象<br>
+                <strong>【使用ソフト】</strong> Pokémon Champions<br>
+                <strong>【対戦ルール】</strong> ダブルバトル（2対2）
+            </div>
+            <p style="font-size:13px; line-height:1.6; color:var(--text-sub);">
+                ポケモンの組み合わせと技のシナジーが勝利のカギ！白熱のダブルバトルを繰り広げよう！<br>パーティのレンタルはありません。
+            </p>
+            <button class="close-btn" onclick="closeModal('modal-double')">閉じる</button>
+        </div>
+    </div>
+
+    <!-- 📋 モーダル：リーグの流れ -->
+    <div id="modal-flow" class="modal" onclick="closeModal('modal-flow')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">📋 リーグの挑戦手順</h2>
+
+            <!-- シングルバトル部門の流れ -->
+            <div style="font-size:14px; font-weight:900; color:var(--rotom-orange); margin:12px 0 6px;">🔴 シングルバトル部門（共通）</div>
+            <div class="step-list">
+                <div class="step-item"><span class="step-num">STEP 1</span> 整理券発行（N346受付）</div>
+                <div class="step-item"><span class="step-num">STEP 2</span> （呼び出し後）受付・移動</div>
+                <div class="step-item"><span class="step-num">STEP 3</span> 各リーグ内でリーグスタッフとバトル</div>
+                <div class="step-item">
+                    <span class="step-num">STEP 4</span> 2敗するか3勝する ➔ 受付へ報告
+                    <div class="branch-box">
+                        💧 <strong>2敗の場合：</strong> 受付にて景品を受け取り終了<br>
+                        🔥 <strong>3勝の場合：</strong> チャンピオン戦のため待機 ➔ チャンピオン戦を実施 ➔ 受付にて景品を受け取り終了
+                    </div>
+                </div>
+            </div>
+
+            <!-- ダブルバトル部門の流れ（省略なし） -->
+            <div style="font-size:14px; font-weight:900; color:#3b82f6; margin:22px 0 6px;">🔵 ダブルバトル部門</div>
+            <div class="step-list">
+                <div class="step-item"><span class="step-num" style="background:#3b82f6;">STEP 1</span> 整理券発行（N346受付）</div>
+                <div class="step-item"><span class="step-num" style="background:#3b82f6;">STEP 2</span> （呼び出し後）受付・移動</div>
+                <div class="step-item"><span class="step-num" style="background:#3b82f6;">STEP 3</span> リーグ内でリーグスタッフとバトル</div>
+                <div class="step-item">
+                    <span class="step-num" style="background:#3b82f6;">STEP 4</span> 2敗するか2勝する ➔ 受付へ報告
+                    <div class="branch-box" style="border-color:#3b82f6; background:#eff6ff;">
+                        💧 <strong>2敗の場合：</strong> 受付にて景品を受け取り終了<br>
+                        🔥 <strong>2勝の場合：</strong> チャンピオン戦のため待機 ➔ チャンピオン戦を実施 ➔ 受付にて景品を受け取り終了
+                    </div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('modal-flow')">閉じる</button>
+        </div>
+    </div>
+
+    <!-- 📜 モーダル：対戦ルール -->
+    <div id="modal-rules" class="modal" onclick="closeModal('modal-rules')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">📜 対戦ルール</h2>
+            <ul class="rule-list">
+                <li><strong>リーグ挑戦中は：</strong>基本的にはリーグスタッフの指示に従い、対戦を進めてください。</li>
+                <li><strong>対戦中は：</strong>混雑回避のため、ダメージ計算はご遠慮ください。※リーグスタッフもダメージ計算を行いません。</li>
+                <li><strong>レンタルについて：</strong>レンタル用のNintendo Switchを貸し出しいたします。リーグスタッフのものなので丁寧に扱うようお願いいたします。</li>
+            </ul>
+            <button class="close-btn" onclick="closeModal('modal-rules')">閉じる</button>
+        </div>
+    </div>
+
+    <!-- 🎁 モーダル：景品・参加賞 -->
+    <div id="modal-prizes" class="modal" onclick="closeModal('modal-prizes')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 class="modal-title">🎁 景品・参加賞</h2>
+            <div style="font-size:14px; line-height:1.7; color: var(--text-main);">
+                <p style="background: #f1f5f9; padding: 12px; border-radius: 12px; font-weight: bold; border-left: 4px solid var(--rotom-orange);">
+                    📢 景品・参加賞の内容は現在調整中です！決まり次第公開いたします。
+                </p>
+                <!-- 内容決定後に編集する領域 -->
+            </div>
+            <button class="close-btn" onclick="closeModal('modal-prizes')">閉じる</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    </script>
+</body>
+</html>
